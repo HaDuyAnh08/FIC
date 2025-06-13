@@ -1,2 +1,0 @@
-# FIC
-Rent Books
