@@ -1,0 +1,11 @@
+[
+  { "id": 1, "title": "Sách A1", "category": "A" },
+  { "id": 2, "title": "Sách A2", "category": "A" },
+  { "id": 3, "title": "Sách A3", "category": "A" },
+  { "id": 4, "title": "Sách B1", "category": "B" },
+  { "id": 5, "title": "Sách B2", "category": "B" },
+  { "id": 6, "title": "Sách B3", "category": "B" },
+  { "id": 7, "title": "Sách C1", "category": "C" },
+  { "id": 8, "title": "Sách C2", "category": "C" },
+  { "id": 9, "title": "Sách C33", "category": "C" }
+]
