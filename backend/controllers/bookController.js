@@ -21,56 +21,60 @@ exports.createBook = async (req, res) => {
   }
 };
 
-// PUT /api/books/:id - Cập nhật sách
-exports.updateBook = async (req, res) => {
-  try {
-    const updatedBook = await Book.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true }
-    );
-    res.json(updatedBook);
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
-};
 
-// DELETE /api/books/:id - Xoá sách
-exports.deleteBook = async (req, res) => {
+exports.getEconomicsBooks = async (req, res) => {
   try {
-    await Book.findByIdAndDelete(req.params.id);
-    res.json({ message: 'Book deleted' });
+    const books = await Book.find({ genre: 'Kinh tế' });
+    res.json(books);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
-}  
-// search follow name and genre :tìm theo tên + thể loại
-exports.searchBooks = async (req, res) => {
+};
+
+exports.getTechnologyBooks = async (req, res) => {
   try {
-    const { name, genre, page = 1, limit = 4, sortBy = 'createdAt', order = 'desc' } = req.query;
+    const books = await Book.find({ genre: 'Công nghệ' });
+    res.json(books);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
-    const filter = {};
-    if (genre) filter.genre = genre;
-    if (name) filter.name = new RegExp(name, 'i');
+exports.getMediaBooks = async (req, res) => {
+  try {
+    const books = await Book.find({ genre: 'Truyền thông' });
+    res.json(books);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
-    const sortOption = {};
-    sortOption[sortBy] = order === 'asc' ? 1 : -1;
+exports.getSelfHelpBooks = async (req, res) => {
+  try {
+    const books = await Book.find({ genre: 'Self-Help' });
+    res.json(books);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
-    const books = await Book.find(filter)
-      .sort(sortOption)
-      .skip((page - 1) * limit)
-      .limit(parseInt(limit));
+exports.getChildrenBooks = async (req, res) => {
+  try {
+    const books = await Book.find({ genre: 'Thiếu nhi' });
+    res.json(books);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
-    const total = await Book.countDocuments(filter);
-
-    res.json({
-      total,
-      page: parseInt(page),
-      pages: Math.ceil(total / limit),
-      books,
-    });
-  } catch (err) {
-    res.status(500).json({ error: 'Server error' });
+// GET /api/books/:id – Lấy thông tin chi tiết 1 sách
+exports.getBookById = async (req, res) => {
+  try {
+    const book = await Book.findById(req.params.id);
+    if (!book) return res.status(404).json({ message: 'Book not found' });
+    res.json(book);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };
 

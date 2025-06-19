@@ -3,17 +3,21 @@ const router = express.Router();
 const {
   getBooks,
   createBook,
-  updateBook,
-  deleteBook,
-  searchBooks
+  getEconomicsBooks,
+  getTechnologyBooks,
+  getMediaBooks,
+  getSelfHelpBooks,
+  getChildrenBooks,
+  getBookById
 } = require('../controllers/bookController');
 
 // Base URL: /api/books
 router.get('/', getBooks);
 router.post('/', createBook);
-router.put('/:id', updateBook);
-router.delete('/:id', deleteBook);
-// Route tìm kiếm theo tên + thể loại
-router.get('/search', searchBooks);  // <-- mới thêm
-
+router.get('/economics', getEconomicsBooks);
+router.get('/technology', getTechnologyBooks);
+router.get('/media', getMediaBooks);
+router.get('/selfhelp', getSelfHelpBooks);
+router.get('/children', getChildrenBooks);
+router.get('/:id', getBookById);
 module.exports = router;
