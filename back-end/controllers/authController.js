@@ -12,21 +12,23 @@ const userGoogle = async ({ name, email, picture }) => {
 };
 
 exports.googleAuth = async (req, res) => {
-  const { redirect_uri } = req.query; // Nhận redirect_uri từ frontend
   const authUrl = oauth2Client.generateAuthUrl({
     scope: ['profile', 'email'],
-    redirect_uri: redirect_uri || 'http://localhost:5173', // Default redirect
+    redirect_uri: process.env.GOOGLE_CALLBACK_URL, // Luôn sử dụng URI của backend
   });
-  res.json({ authUrl }); // Trả về URL để frontend redirect
+  res.json({ authUrl });
 };
 
 exports.googleCallback = async (req, res) => {
   const code = req.query.code;
+  if (!code) {
+    return res.status(400).json({ message: 'Missing authorization code' });
+  }
   try {
     const { tokens } = await oauth2Client.getToken(code);
     oauth2Client.setCredentials(tokens);
     const userRes = await axios.get(
-      `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${googleRes.tokens.access_token}`
+      `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${tokens.access_token}`
     );
     const { email, name, picture } = userRes.data;
 
@@ -34,9 +36,9 @@ exports.googleCallback = async (req, res) => {
     const token = jwt.sign({ _id: user._id, email }, process.env.JWT_SECRET, {
       expiresIn: process.env.JWT_TIMEOUT || '1h',
     });
-    // Lưu token vào localStorage hoặc cookie (tùy chọn)
-    res.redirect(`${redirect_uri || 'http://localhost:5173'}?token=${token}&user=${encodeURIComponent(JSON.stringify(user))}`);
+    res.redirect(`http://localhost:5173?token=${token}&user=${encodeURIComponent(JSON.stringify(user))}`);
   } catch (error) {
+    console.error('Callback error:', error);
     res.status(500).json({ message: 'Internal Server Error', error: error.message });
   }
 };

@@ -5,4 +5,4 @@ const { googleAuth, googleCallback } = require('../controllers/authController');
 router.get('/auth/google', googleAuth);
 router.get('/auth/google/callback', googleCallback);
 
-module.exports = router;
+module.exports = router;``

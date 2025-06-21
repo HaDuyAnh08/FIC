@@ -12,12 +12,8 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ isLoggedIn, setIsLoggedIn }) => {
   const handleLogin = async () => {
     try {
-      const response = await axios.get('/auth/google', {
-        // Lấy URL redirect từ backend
-        params: { redirect_uri: 'http://localhost:5173' }, // Điều chỉnh redirect_uri nếu cần
-      });
-      // Backend sẽ redirect đến Google, frontend chỉ cần chuyển hướng
-      window.location.href = response.data.authUrl; // Giả định backend trả về authUrl
+      const response = await axios.get('/auth/google');
+      window.location.href = response.data.authUrl;
     } catch (error) {
       console.error('Login error:', error);
     }
