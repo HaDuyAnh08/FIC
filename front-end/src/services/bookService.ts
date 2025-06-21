@@ -12,7 +12,7 @@ export const getAllBooks = async () => {
 }
 
 export const getBooksByGenre = async (genre: string) => {
-  const response = await axiosInstance.get(`/api/books/genre/${genre}`)
+  const response = await axiosInstance.get(`/books/genre/${genre}`)
   return response.data.map((book: any) => ({
     id: book._id,
     name: book.name,
@@ -23,6 +23,6 @@ export const getBooksByGenre = async (genre: string) => {
 }
 
 export const getBookById = async (id: string) => {
-  const response = await axiosInstance.get(`/api/books/${id}`)
+  const response = await axiosInstance.get(`/books/${id}`)
   return response.data
 }
