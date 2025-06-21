@@ -1,6 +1,6 @@
 export type BookList = {
   id: string;
-  name?: string;
+  name: string;
   genre?: string;
   author?: string;
   yearPublished?: number;
