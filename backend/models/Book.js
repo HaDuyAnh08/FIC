@@ -28,7 +28,13 @@ const bookSchema = new mongoose.Schema({
   image: {
     type: String,
     default: '', // hoặc null
-  }
+  },
+  description: { type: String, default: '' }, // 👉 thêm mô tả sách
+
+  course: { type: String, default: '' },
+  
+  language: { type: String, default: '' },
+
 }, { timestamps: true });
 
 module.exports = mongoose.model('Book', bookSchema);

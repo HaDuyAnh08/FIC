@@ -23,6 +23,9 @@ function BookDetail() {
       <p><strong>Năm xuất bản:</strong> {book.yearPublished}</p>
       <p><strong>Giá thuê:</strong> {book.rentalPrice} VND</p>
       <p><strong>Tình trạng:</strong> {book.stockStatus}</p>
+      <p><strong>Mô tả:</strong> {book.description}</p>
+      <p><strong>Khóa học:</strong> {book.course}</p>
+      <p><strong>Ngôn ngữ:</strong> {book.languge}</p>
     </div>
   );
 }
