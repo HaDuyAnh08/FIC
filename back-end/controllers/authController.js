@@ -14,7 +14,7 @@ const userGoogle = async ({ name, email, picture }) => {
 exports.googleAuth = async (req, res) => {
   const authUrl = oauth2Client.generateAuthUrl({
     scope: ['profile', 'email'],
-    redirect_uri: process.env.GOOGLE_CALLBACK_URL, // Luôn sử dụng URI của backend
+    redirect_uri: process.env.GOOGLE_CALLBACK_URL,
   });
   res.json({ authUrl });
 };

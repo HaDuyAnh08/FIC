@@ -4,7 +4,6 @@ import { useLocation } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import SearchBar from '../components/SearchBar';
-import BookList from '../components/BookList';
 import { getAllBooks } from '../services/bookService';
 import type { Book } from '../types';
 import { isAuthenticated, login } from '../utils/auth';
@@ -13,7 +12,7 @@ const HomePage: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const location = useLocation();
 
-  const { data: books = [], isLoading, error } = useQuery<Book[], Error>({
+  const { isLoading, error } = useQuery<Book[], Error>({
     queryKey: ['books', 'all'],
     queryFn: getAllBooks,
   });
@@ -47,7 +46,6 @@ const HomePage: React.FC = () => {
     <div onClick={handleNavigation}>
       <Header isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
       <SearchBar />
-      <BookList books={books} />
       <Footer />
     </div>
   );
