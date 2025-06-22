@@ -13,8 +13,10 @@ app.use(express.json());
 // Load routes
 const authRoutes = require('./routes/authRoutes');
 const bookRoutes = require('./routes/bookRoutes');
+const cartRoutes = require('./routes/cartRoutes');
 app.use('/', authRoutes);
 app.use('/', bookRoutes);
+app.use('/', cartRoutes);
 
 // Connect to MongoDB
 const connectDB = require('./config/db');
