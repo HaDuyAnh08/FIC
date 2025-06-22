@@ -1,32 +1,31 @@
-import React, { useState, useEffect } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { useLocation } from 'react-router-dom';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
-import SearchBar from '../components/SearchBar';
-import { getAllBooks } from '../services/bookService';
-import type { Book } from '../types';
-import { isAuthenticated, login } from '../utils/auth';
+import React, { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useLocation } from "react-router-dom";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
+import SearchBar from "../components/SearchBar";
+import { getAllBooks } from "../services/bookService";
+import type { Book } from "../types/bookType";
+import { isAuthenticated, login } from "../utils/auth";
 
 const HomePage: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const location = useLocation();
 
   const { isLoading, error } = useQuery<Book[], Error>({
-    queryKey: ['books', 'all'],
+    queryKey: ["books", "all"],
     queryFn: getAllBooks,
   });
 
   useEffect(() => {
-    // Xử lý query params sau Google callback
     const params = new URLSearchParams(location.search);
-    const token = params.get('token');
-    const user = params.get('user');
+    const token = params.get("token");
+    const user = params.get("user");
 
     if (token && user) {
-      localStorage.setItem('token', token);
-      localStorage.setItem('user', user);
-      login(); // Cập nhật trạng thái đăng nhập
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", user);
+      login();
       setIsLoggedIn(true);
     } else {
       setIsLoggedIn(isAuthenticated());
@@ -35,7 +34,7 @@ const HomePage: React.FC = () => {
 
   const handleNavigation = () => {
     if (!isLoggedIn) {
-      alert('Please login to continue.');
+      alert("Please login to continue.");
     }
   };
 
