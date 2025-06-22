@@ -1,10 +1,21 @@
 const Cart = require('../../models/Cart');
 
 module.exports = async function removeFromCart(req, res) {
-  const { id } = req.params;
+  const { bookId } = req.params;
+  const userId = req.user._id; // Lấy user từ token (middleware)
+
   try {
-    await Cart.findByIdAndDelete(id); // Đúng model: Cart
-    res.json({ message: 'Removed from cart' });
+    const cart = await Cart.findOne({ userId });
+
+    if (!cart) {
+      return res.status(404).json({ message: 'Giỏ hàng không tồn tại' });
+    }
+
+    // Lọc bỏ item có bookId cần xóa
+    cart.items = cart.items.filter(item => item.book.toString() !== bookId);
+
+    await cart.save();
+    res.json({ message: 'Removed book from cart', cart });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

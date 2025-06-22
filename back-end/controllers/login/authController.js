@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const { oauth2Client } = require('../../config/googleClient');
 const User = require('../../models/User');
 
+
 const userGoogle = async ({ name, email, picture }) => {
   let user = await User.findOne({ email });
   if (!user) {
