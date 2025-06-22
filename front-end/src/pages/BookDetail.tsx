@@ -1,21 +1,23 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Row, Col, Typography, Image, Space, Divider, Spin, Alert } from 'antd';
-import BookCard from '../components/BookCard';
-import BookQuantity from '../components/BookQuantity';
-import AddToCartButton from '../components/AddToCartButton';
-import { bookApi } from '../api/bookApi';
-import type { Book } from '../types';
+import { Row, Col, Typography, Image, Spin, Alert, Button, InputNumber } from 'antd';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
+import { getBookById } from '../services/bookService';
+import { useCart } from '../hooks/CartContext';
+import type { Book } from '../types/bookType';
+import { isAuthenticated } from '../utils/auth';
 
 const { Title, Paragraph } = Typography;
 
 const BookDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [book, setBook] = useState<Book | null>(null);
-  const [suggestedBooks, setSuggestedBooks] = useState<Book[]>([]);
-  const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(isAuthenticated());
+  const [quantity, setQuantity] = useState(1);
+  const { addToCart } = useCart();
 
   useEffect(() => {
     const fetchBookDetails = async () => {
@@ -29,7 +31,7 @@ const BookDetail: React.FC = () => {
         setLoading(true);
         setError(null);
 
-        const bookData = await bookApi.getBookById(id);
+        const bookData = await getBookById(id);
         if (!bookData) {
           setError('Book not found');
           setBook(null);
@@ -38,9 +40,6 @@ const BookDetail: React.FC = () => {
         }
 
         setBook(bookData);
-
-        const suggested = await bookApi.getSuggestedBooks(bookData.genre, bookData._id);
-        setSuggestedBooks(suggested);
       } catch (err) {
         setError('Failed to load book details. Please try again later.');
         console.error('Error fetching book details:', err);
@@ -54,7 +53,7 @@ const BookDetail: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="p-4 max-w-7xl mx-auto flex justify-center">
+      <div style={{ padding: '20px', textAlign: 'center', marginTop: '80px' }}>
         <Spin size="large" />
       </div>
     );
@@ -62,50 +61,54 @@ const BookDetail: React.FC = () => {
 
   if (error || !book) {
     return (
-      <div className="p-4 max-w-7xl mx-auto">
+      <div style={{ padding: '20px', maxWidth: '1200px', margin: '80px auto 0' }}>
         <Alert message={error || 'Book not found'} type="error" showIcon />
       </div>
     );
   }
 
   return (
-    <div className="p-4 max-w-7xl mx-auto">
-      <Row gutter={[32, 32]}>
-        <Col xs={24} md={8}>
-          <Image
-            src={book.image || 'https://via.placeholder.com/150'}
-            alt={`Cover of ${book.name} by ${book.author}`}
-            preview={false}
-          />
-        </Col>
-        <Col xs={24} md={16}>
-          <Title level={2}>{book.name}</Title>
-          <Paragraph strong>Author: {book.author}</Paragraph>
-          <Paragraph strong>Genre: {book.genre}</Paragraph>
-          <Paragraph strong className="text-xl">
-            ${book.rentalPrice.toFixed(2)}
-          </Paragraph>
-          <Paragraph strong>Stock: {book.stockStatus}</Paragraph>
-          {book.yearPublished && <Paragraph>Published: {book.yearPublished}</Paragraph>}
-          <Space size="middle" className="mb-4">
-            <BookQuantity quantity={quantity} setQuantity={setQuantity} />
-            <AddToCartButton book={book} quantity={quantity} />
-          </Space>
-        </Col>
-      </Row>
-      <Divider />
-      <Title level={3}>Suggested Books</Title>
-      <Row gutter={[16, 16]}>
-        {suggestedBooks.length === 0 ? (
-          <Alert message="No suggested books available" type="info" showIcon />
-        ) : (
-          suggestedBooks.map((book) => (
-            <Col xs={24} sm={12} md={8} lg={6} key={book._id}>
-              <BookCard book={book} />
-            </Col>
-          ))
-        )}
-      </Row>
+    <div>
+      <Header isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+      <div style={{ padding: '20px', maxWidth: '1200px', margin: '80px auto 0' }}>
+        <Row gutter={[32, 32]}>
+          <Col xs={24} md={8}>
+            <Image
+              src={book.image || 'https://via.placeholder.com/150'}
+              alt={`Cover of ${book.name || 'Unknown'} by ${book.author || 'Unknown'}`}
+              preview={false}
+              style={{ maxWidth: '100%' }}
+            />
+          </Col>
+          <Col xs={24} md={16}>
+            <Title level={2}>{book.name || 'Unknown Title'}</Title>
+            <Paragraph strong>Author: {book.author || 'Unknown Author'}</Paragraph>
+            <Paragraph strong>Genre: {book.genre || 'N/A'}</Paragraph>
+            <Paragraph strong style={{ fontSize: '18px' }}>
+              ${book.rentalPrice ? book.rentalPrice.toFixed(2) : 'N/A'}
+            </Paragraph>
+            <Paragraph strong>Stock: {book.stockStatus || 'Unknown'}</Paragraph>
+            {book.yearPublished && (
+              <Paragraph>Published: {book.yearPublished}</Paragraph>
+            )}
+            <div style={{ marginTop: 20 }}>
+              <InputNumber
+                min={1}
+                value={quantity}
+                onChange={(value) => setQuantity(value as number)}
+                style={{ marginRight: 10 }}
+              />
+              <Button
+                type="primary"
+                onClick={() => addToCart(book, quantity)}
+              >
+                Add to Cart
+              </Button>
+            </div>
+          </Col>
+        </Row>
+      </div>
+      <Footer />
     </div>
   );
 };
