@@ -1,24 +1,29 @@
-import React from 'react';
-import { Dropdown, Menu, Button } from 'antd';
-import { UserOutlined, ShoppingCartOutlined } from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom';
-import logo from '../assets/logo.png';
-import axios from '../services/axios';
+import React from "react";
+import { Dropdown, Menu } from "antd";
+import { ShoppingCartOutlined } from "@ant-design/icons";
+import logo from "../assets/logo.png";
+import axios from "../services/axios";
+import { useNavigate } from "react-router-dom";
 
 interface HeaderProps {
   isLoggedIn: boolean;
   setIsLoggedIn: (value: boolean) => void;
+  userProfile?: string;
 }
 
-const Header: React.FC<HeaderProps> = ({ isLoggedIn, setIsLoggedIn }) => {
+const Header: React.FC<HeaderProps> = ({
+  isLoggedIn,
+  setIsLoggedIn,
+  userProfile,
+}) => {
   const navigate = useNavigate();
 
   const handleLogin = async () => {
     try {
-      const response = await axios.get('/auth/google');
+      const response = await axios.get("/auth/google");
       window.location.href = response.data.authUrl;
     } catch (error) {
-      console.error('Login error:', error);
+      console.error("Login error:", error);
     }
   };
 
@@ -34,28 +39,108 @@ const Header: React.FC<HeaderProps> = ({ isLoggedIn, setIsLoggedIn }) => {
     </Menu>
   );
 
+  const handleNavigate = (path: string) => {
+    navigate(path);
+  };
+
   return (
-    <div style={{ position: 'fixed', top: 0, width: '100%', background: '#f5f5dc', padding: '10px', zIndex: 1000 }}>
-      <img src={logo} alt="Logo" style={{ height: '40px', marginRight: '20px' }} />
-      <span style={{ fontSize: '24px', color: '#1E90FF' }}>LIBERO Book Store</span>
-      <div style={{ float: 'right' }}>
+    <div
+      style={{
+        position: "fixed",
+        top: 0,
+        width: "100%",
+        background: "#e6f0fa",
+        padding: "10px 20px",
+        zIndex: 1000,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+      }}
+    >
+      <div style={{ display: "flex", alignItems: "center" }}>
+        <img
+          src={logo}
+          alt="Logo"
+          style={{ height: "40px", marginRight: "10px" }}
+        />
+        <span style={{ fontSize: "18px", fontWeight: "bold", color: "#333" }}>
+          LIBERO
+        </span>
+      </div>
+      <div style={{ display: "flex", alignItems: "center" }}>
+        <a
+          href="#"
+          onClick={(e) => {
+            e.preventDefault();
+            handleNavigate("/introduce");
+          }}
+          style={{
+            color: "#333",
+            margin: "0 15px",
+            fontSize: "14px",
+            textDecoration: "none",
+          }}
+        >
+          Giới thiệu
+        </a>
+        <a
+          href="#"
+          onClick={(e) => {
+            e.preventDefault();
+            handleNavigate("/books");
+          }}
+          style={{
+            color: "#333",
+            margin: "0 15px",
+            fontSize: "14px",
+            textDecoration: "none",
+          }}
+        >
+          Thư viện sách
+        </a>
+      </div>
+      <div style={{ display: "flex", alignItems: "center" }}>
         {isLoggedIn ? (
           <>
             <ShoppingCartOutlined
-              style={{ fontSize: '24px', marginRight: '20px', cursor: 'pointer' }}
-              onClick={() => navigate('/cart')} // Điều hướng đến giỏ hàng
+              style={{
+                fontSize: "20px",
+                marginRight: "15px",
+                color: "#333",
+                cursor: "pointer",
+                position: "relative",
+              }}
+              onClick={() => navigate("/cart")}
             />
-            <Dropdown overlay={userMenu} trigger={['click']}>
-              <UserOutlined style={{ fontSize: '24px', cursor: 'pointer' }} />
+            <Dropdown overlay={userMenu} trigger={["click"]}>
+              <img
+                src={userProfile || "https://via.placeholder.com/40"}
+                alt="User Profile"
+                style={{
+                  width: "30px",
+                  height: "30px",
+                  borderRadius: "50%",
+                  cursor: "pointer",
+                  border: "2px solid #fff",
+                }}
+              />
             </Dropdown>
           </>
         ) : (
-          <Button
+          <button
             onClick={handleLogin}
-            style={{ padding: '5px 15px', background: '#1A73E8', color: 'white' }}
+            style={{
+              padding: "5px 15px",
+              background: "#1A73E8",
+              color: "white",
+              border: "none",
+              borderRadius: "5px",
+              cursor: "pointer",
+            }}
           >
             Login
-          </Button>
+          </button>
         )}
       </div>
     </div>

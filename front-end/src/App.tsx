@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import AppRouter from './router/router';
 import { CartProvider } from './hooks/CartContext';
 
-// Create a QueryClient instance
+
 const queryClient = new QueryClient();
 
 const App: React.FC = () => {
@@ -12,7 +12,7 @@ const App: React.FC = () => {
     <QueryClientProvider client={queryClient}>
       <CartProvider>
         <BrowserRouter>
-          <AppRouter />
+            <AppRouter />
         </BrowserRouter>
       </CartProvider>
     </QueryClientProvider>

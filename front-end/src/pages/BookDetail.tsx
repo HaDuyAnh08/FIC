@@ -1,14 +1,14 @@
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { Row, Col, Typography, Image, Spin, Alert, Button, InputNumber } from 'antd';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
-import { getBookById } from '../services/bookService';
-import { useCart } from '../hooks/CartContext';
-import type { Book } from '../types/bookType';
-import { isAuthenticated } from '../utils/auth';
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { Row, Col, Typography, Image, Spin, Alert, Button, InputNumber } from "antd";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
+import { getBookById } from "../services/bookService";
+import { useCart } from "../hooks/CartContext";
+import type { Book } from "../types/bookType";
+import { isAuthenticated } from "../utils/auth";
 
-const { Title, Paragraph } = Typography;
+const { Title, Paragraph, Text } = Typography;
 
 const BookDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -22,7 +22,7 @@ const BookDetail: React.FC = () => {
   useEffect(() => {
     const fetchBookDetails = async () => {
       if (!id) {
-        setError('Invalid book ID');
+        setError("Invalid book ID");
         setLoading(false);
         return;
       }
@@ -33,7 +33,7 @@ const BookDetail: React.FC = () => {
 
         const bookData = await getBookById(id);
         if (!bookData) {
-          setError('Book not found');
+          setError("Book not found");
           setBook(null);
           setLoading(false);
           return;
@@ -41,8 +41,8 @@ const BookDetail: React.FC = () => {
 
         setBook(bookData);
       } catch (err) {
-        setError('Failed to load book details. Please try again later.');
-        console.error('Error fetching book details:', err);
+        setError("Failed to load book details. Please try again later.");
+        console.error("Error fetching book details:", err);
       } finally {
         setLoading(false);
       }
@@ -53,7 +53,7 @@ const BookDetail: React.FC = () => {
 
   if (loading) {
     return (
-      <div style={{ padding: '20px', textAlign: 'center', marginTop: '80px' }}>
+      <div style={{ padding: "20px", textAlign: "center", marginTop: "80px" }}>
         <Spin size="large" />
       </div>
     );
@@ -61,8 +61,10 @@ const BookDetail: React.FC = () => {
 
   if (error || !book) {
     return (
-      <div style={{ padding: '20px', maxWidth: '1200px', margin: '80px auto 0' }}>
-        <Alert message={error || 'Book not found'} type="error" showIcon />
+      <div
+        style={{ padding: "20px", maxWidth: "1200px", margin: "80px auto 0" }}
+      >
+        <Alert message={error || "Book not found"} type="error" showIcon />
       </div>
     );
   }
@@ -70,39 +72,96 @@ const BookDetail: React.FC = () => {
   return (
     <div>
       <Header isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
-      <div style={{ padding: '20px', maxWidth: '1200px', margin: '80px auto 0' }}>
+      <div
+        style={{ padding: "20px", maxWidth: "1200px", margin: "80px auto 0" }}
+      >
         <Row gutter={[32, 32]}>
           <Col xs={24} md={8}>
             <Image
-              src={book.image || 'https://via.placeholder.com/150'}
-              alt={`Cover of ${book.name || 'Unknown'} by ${book.author || 'Unknown'}`}
+              src={book.image || "https://via.placeholder.com/300x450"}
+              alt={`Cover of ${book.name || "Unknown"} by ${
+                book.author || "Unknown"
+              }`}
               preview={false}
-              style={{ maxWidth: '100%' }}
+              style={{ maxWidth: "100%", height: "450px", objectFit: "cover" }}
             />
           </Col>
           <Col xs={24} md={16}>
-            <Title level={2}>{book.name || 'Unknown Title'}</Title>
-            <Paragraph strong>Author: {book.author || 'Unknown Author'}</Paragraph>
-            <Paragraph strong>Genre: {book.genre || 'N/A'}</Paragraph>
-            <Paragraph strong style={{ fontSize: '18px' }}>
-              ${book.rentalPrice ? book.rentalPrice.toFixed(2) : 'N/A'}
+            <Title
+              level={1}
+              style={{
+                fontSize: "36px",
+                fontWeight: "bold",
+                textAlign: "center",
+                color: "#333",
+              }}
+            >
+              {book.name || "Unknown Title"}
+            </Title>
+            <Paragraph
+              style={{
+                fontSize: "14px",
+                color: "#666",
+                textAlign: "center",
+                margin: "10px 0",
+              }}
+            >
+              <Text strong>Author:</Text> {book.author || "Unknown Author"} |
+              <Text strong>Genre:</Text> {book.genre || "N/A"} |
+              <Text strong>Year:</Text> {book.yearPublished || "N/A"}
             </Paragraph>
-            <Paragraph strong>Stock: {book.stockStatus || 'Unknown'}</Paragraph>
-            {book.yearPublished && (
-              <Paragraph>Published: {book.yearPublished}</Paragraph>
-            )}
-            <div style={{ marginTop: 20 }}>
+            <Paragraph
+              style={{
+                fontSize: "32px",
+                fontWeight: "bold",
+                color: "#ff0000",
+                textAlign: "center",
+                margin: "20px 0",
+              }}
+            >
+              {book.rentalPrice
+                ? `${book.rentalPrice.toLocaleString()} đ`
+                : "N/A"}
+            </Paragraph>
+            <Paragraph
+              style={{
+                fontSize: "12px",
+                color: "#666",
+                textAlign: "center",
+                marginBottom: "20px",
+              }}
+            >
+              Status: {book.stockStatus || "Unknown"}
+            </Paragraph>
+            <Paragraph
+              style={{
+                fontSize: "16px",
+                color: "#444",
+                textAlign: "justify",
+                lineHeight: "1.6",
+              }}
+            >
+              {book.detail || "No description available."}
+            </Paragraph>
+            <div style={{ textAlign: "center", marginTop: "30px" }}>
               <InputNumber
                 min={1}
                 value={quantity}
                 onChange={(value) => setQuantity(value as number)}
-                style={{ marginRight: 10 }}
+                style={{ marginRight: "10px", width: "60px" }}
               />
               <Button
                 type="primary"
+                size="large"
+                style={{
+                  fontSize: "18px",
+                  padding: "15px 30px",
+                  background: "#1A73E8",
+                  borderColor: "#1A73E8",
+                }}
                 onClick={() => addToCart(book, quantity)}
               >
-                Add to Cart
+                Thêm vào giỏ hàng
               </Button>
             </div>
           </Col>
