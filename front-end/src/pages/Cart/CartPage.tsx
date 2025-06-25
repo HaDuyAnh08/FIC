@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Table, Button, Typography, Empty } from "antd";
+import { Table, Button, Typography, Empty, message } from "antd";
 import { useNavigate } from "react-router-dom";
 import AppHeader from "../../components/AppHeader";
 import AppFooter from "../../components/AppFooter";
@@ -18,6 +18,7 @@ const CartPage: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(isAuthenticated());
   const { token } = useAuth();
   const [cartItems, setCartItems] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchCartItems = async () => {
@@ -26,11 +27,14 @@ const CartPage: React.FC = () => {
         return;
       }
       try {
+        setLoading(true);
         const items = await getCartItems(token);
         setCartItems(items);
       } catch (error) {
         console.error("Error fetching cart items:", error);
-        alert("Failed to load cart. Please try again.");
+        message.error("Failed to load cart. Please try again.");
+      } finally {
+        setLoading(false);
       }
     };
     fetchCartItems();
@@ -41,15 +45,16 @@ const CartPage: React.FC = () => {
     try {
       await removeFromCart(id, token);
       setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
+      message.success("Book removed from cart!");
     } catch (error) {
       console.error("Error removing from cart:", error);
-      alert("Failed to remove book from cart. Please try again.");
+      message.error("Failed to remove book from cart. Please try again.");
     }
   };
 
   const handleCheckout = async () => {
     if (!token) {
-      alert("Please login to proceed with checkout.");
+      message.warning("Please login to proceed with checkout.");
       navigate("/");
       return;
     }
@@ -57,10 +62,11 @@ const CartPage: React.FC = () => {
       const bookIds = cartItems.map((item) => item.id);
       await checkout(bookIds, token);
       setCartItems([]);
+      message.success("Checkout successful!");
       navigate("/rental-status");
     } catch (error) {
       console.error("Error during checkout:", error);
-      alert("Failed to process checkout. Please try again.");
+      message.error("Failed to process checkout. Please try again.");
     }
   };
 
@@ -115,7 +121,11 @@ const CartPage: React.FC = () => {
       <AppHeader isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
       <div style={{ padding: "20px", maxWidth: "1200px", margin: "80px auto" }}>
         <Title level={2}>Your Cart</Title>
-        {cartItems.length === 0 ? (
+        {loading ? (
+          <div style={{ textAlign: "center", marginTop: "20px" }}>
+            Loading...
+          </div>
+        ) : cartItems.length === 0 ? (
           <Empty description="Your cart is empty">
             <Button type="primary" onClick={() => navigate("/")}>
               Continue Shopping

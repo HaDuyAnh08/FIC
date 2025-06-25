@@ -6,28 +6,36 @@ export const addToCart = async (
   token: string
 ): Promise<void> => {
   await axiosInstance.post(
-    "/cart/add",
+    "/add",
     { bookId },
     { headers: { Authorization: `Bearer ${token}` } }
   );
 };
 
 export const getCartItems = async (token: string): Promise<Book[]> => {
-  const response = await axiosInstance.get("/cart", {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  return response.data.map((book: any) => ({
-    id: book._id,
-    name: book.name,
-    author: book.author,
-    genre: book.genre,
-    rentalPrice: book.rentalPrice,
-    stockStatus: book.stockStatus,
-    image: book.image || "https://via.placeholder.com/150",
-    yearPublished: book.yearPublished,
-    detail: book.detail,
-    quantity: book.quantity || 1,
-  }));
+  try {
+    const response = await axiosInstance.get("/cart", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    const data = Array.isArray(response.data)
+      ? response.data
+      : response.data.items || [];
+    return data.map((book: any) => ({
+      id: book._id,
+      name: book.name,
+      author: book.author,
+      genre: book.genre,
+      rentalPrice: book.rentalPrice,
+      stockStatus: book.stockStatus,
+      image: book.image || "https://via.placeholder.com/150",
+      yearPublished: book.yearPublished,
+      quantity: book.quantity || 1,
+    }));
+  } catch (error) {
+    console.error("Error in getCartItems:", error);
+    return [];
+  }
 };
 
 export const removeFromCart = async (
@@ -51,19 +59,27 @@ export const checkout = async (
 };
 
 export const getRentalItems = async (token: string): Promise<Book[]> => {
-  const response = await axiosInstance.get("/rentals", {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  return response.data.map((book: any) => ({
-    id: book._id,
-    name: book.name,
-    author: book.author,
-    genre: book.genre,
-    rentalPrice: book.rentalPrice,
-    stockStatus: book.stockStatus,
-    image: book.image || "https://via.placeholder.com/150",
-    yearPublished: book.yearPublished,
-    detail: book.detail,
-    quantity: book.quantity || 1,
-  }));
+  try {
+    const response = await axiosInstance.get("/rentals", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    const data = Array.isArray(response.data)
+      ? response.data
+      : response.data.items || [];
+    return data.map((book: any) => ({
+      id: book._id,
+      name: book.name,
+      author: book.author,
+      genre: book.genre,
+      rentalPrice: book.rentalPrice,
+      stockStatus: book.stockStatus,
+      image: book.image || "https://via.placeholder.com/150",
+      yearPublished: book.yearPublished,
+      quantity: book.quantity || 1,
+    }));
+  } catch (error) {
+    console.error("Error in getRentalItems:", error);
+    return [];
+  }
 };
