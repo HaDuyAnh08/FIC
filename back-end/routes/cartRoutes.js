@@ -7,7 +7,7 @@ const deleteCart = require('../controllers/cart/deleteCart')
 const verifyToken = require('../middleware/auth');
 
 router.get('/cart',verifyToken, getCart);
-router.post('/add',verifyToken, postCart);
+router.post('/addcart',verifyToken, postCart);
 router.delete('/item/:bookId',verifyToken, deleteCart);
 
 module.exports = router;

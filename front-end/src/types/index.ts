@@ -4,8 +4,7 @@ export interface Book {
   author?: string;
   genre?: string;
   rentalPrice?: number;
-  stockStatus?: "in stock" | "out of stock";
+  stockStatus?: 'in stock' | 'out of stock';
   image?: string;
   yearPublished?: number;
-  detail?: string;
 }

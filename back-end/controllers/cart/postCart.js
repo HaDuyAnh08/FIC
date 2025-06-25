@@ -1,7 +1,7 @@
 const Cart = require('../../models/Cart');
 
 module.exports = async (req, res) => { 
-  const userId = req.user._id;
+  const userId = req.user._id; // get token
   const { bookId, quantity = 1, rentalDays = 7 } = req.body;
 
   try {
@@ -21,7 +21,6 @@ module.exports = async (req, res) => {
         cart.items.push({ book: bookId, quantity, rentalDays });
       }
     }
-
     await cart.save();
     res.status(200).json(cart);
   } catch (err) {

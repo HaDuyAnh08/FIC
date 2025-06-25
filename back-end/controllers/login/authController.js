@@ -2,7 +2,7 @@ const axios = require('axios');
 const jwt = require('jsonwebtoken');
 const { oauth2Client } = require('../../config/googleClient');
 const User = require('../../models/User');
-
+const {sendMail} = require('../helpers/sendMail');
 
 const userGoogle = async ({ name, email, picture }) => {
   let user = await User.findOne({ email });
@@ -34,7 +34,8 @@ exports.googleCallback = async (req, res) => {
     const { email, name, picture } = userRes.data;
 
     const user = await userGoogle({ name, email, picture });
-    const token = jwt.sign({ _id: user._id, email }, process.env.JWT_SECRET, {
+    sendMail(email, "Welcome to LIBERO. You have successfully logged in", `Hi ${name}, Chào mừng bạn đến với kho tàng tri thức!`);
+    const token = jwt.sign({ _id: user._id, email, name: user.name }, process.env.JWT_SECRET, {
       expiresIn: process.env.JWT_TIMEOUT || '1h',
     });
     res.redirect(`http://localhost:5173?token=${token}&user=${encodeURIComponent(JSON.stringify(user))}`);

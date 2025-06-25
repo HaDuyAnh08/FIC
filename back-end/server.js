@@ -14,9 +14,11 @@ app.use(express.json());
 const authRoutes = require('./routes/authRoutes');
 const bookRoutes = require('./routes/bookRoutes');
 const cartRoutes = require('./routes/cartRoutes');
+const orderRoutes = require('./routes/orderRoutes');
 app.use('/', authRoutes);
 app.use('/', bookRoutes);
 app.use('/', cartRoutes);
+app.use('/', orderRoutes);
 
 // Connect to MongoDB
 const connectDB = require('./config/db');
