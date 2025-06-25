@@ -12,6 +12,7 @@ export const getAllBooks = async (): Promise<Book[]> => {
     stockStatus: book.stockStatus,
     image: book.image || "https://via.placeholder.com/150",
     yearPublished: book.yearPublished,
+    detail: book.detail,
   }));
 };
 
@@ -26,6 +27,7 @@ export const getBooksByGenre = async (genre: string): Promise<Book[]> => {
     stockStatus: book.stockStatus,
     image: book.image || "https://via.placeholder.com/150",
     yearPublished: book.yearPublished,
+    detail: book.detail,
   }));
 };
 
@@ -41,6 +43,7 @@ export const getBookById = async (id: string): Promise<Book> => {
     stockStatus: book.stockStatus,
     image: book.image || "https://via.placeholder.com/150",
     yearPublished: book.yearPublished,
+    detail: book.detail,
   };
 };
 
@@ -62,5 +65,6 @@ export const searchBooks = async (
     stockStatus: book.stockStatus,
     image: book.image || "https://via.placeholder.com/150",
     yearPublished: book.yearPublished,
+    detail: book.detail,
   }));
 };
