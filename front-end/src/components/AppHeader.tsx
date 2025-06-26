@@ -67,7 +67,10 @@ const AppHeader: React.FC<HeaderProps> = ({ isLoggedIn, setIsLoggedIn }) => {
         boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
       }}
     >
-      <div style={{ display: "flex", alignItems: "center" }}>
+      <div
+        style={{ display: "flex", alignItems: "center", cursor: "pointer" }}
+        onClick={() => handleNavigate("/")}
+      >
         <img
           src={logo}
           alt="Logo"
@@ -84,8 +87,8 @@ const AppHeader: React.FC<HeaderProps> = ({ isLoggedIn, setIsLoggedIn }) => {
             e.preventDefault();
             handleNavigate("/introduce");
           }}
+          className="nav-link"
           style={{
-            color: "#333",
             margin: "0 15px",
             fontSize: "14px",
             textDecoration: "none",
@@ -99,8 +102,8 @@ const AppHeader: React.FC<HeaderProps> = ({ isLoggedIn, setIsLoggedIn }) => {
             e.preventDefault();
             handleNavigate("/books");
           }}
+          className="nav-link"
           style={{
-            color: "#333",
             margin: "0 15px",
             fontSize: "14px",
             textDecoration: "none",
@@ -112,12 +115,12 @@ const AppHeader: React.FC<HeaderProps> = ({ isLoggedIn, setIsLoggedIn }) => {
       <div style={{ display: "flex", alignItems: "center" }}>
         {isLoggedIn ? (
           <>
-            <Dropdown overlay={cartMenu} trigger={["click"]}>
+            <Dropdown overlay={cartMenu} trigger={["hover"]}>
               <ShoppingCartOutlined
+                className="cart-icon"
                 style={{
                   fontSize: "20px",
                   marginRight: "15px",
-                  color: "#333",
                   cursor: "pointer",
                   position: "relative",
                 }}
@@ -153,6 +156,24 @@ const AppHeader: React.FC<HeaderProps> = ({ isLoggedIn, setIsLoggedIn }) => {
           </button>
         )}
       </div>
+      <style>
+        {`
+          .cart-icon {
+            color: #333;
+            transition: color 0.3s ease;
+          }
+          .cart-icon:hover {
+            color: red;
+          }
+          .nav-link {
+            color: #333;
+            transition: color 0.3s ease;
+          }
+          .nav-link:hover {
+            color: red;
+          }
+        `}
+      </style>
     </div>
   );
 };

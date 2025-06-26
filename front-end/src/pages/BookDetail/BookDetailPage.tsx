@@ -1,15 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import {
-  Row,
-  Col,
-  Typography,
-  Image,
-  Spin,
-  Alert,
-  Button,
-  InputNumber,
-} from "antd";
+import { Row, Col, Typography, Image, Spin, Alert, Button, InputNumber } from "antd";
 import AppHeader from "../../components/AppHeader";
 import AppFooter from "../../components/AppFooter";
 import { getBookById } from "../../services/bookService";
@@ -78,7 +69,7 @@ const BookDetailPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div style={{ padding: "20px", textAlign: "center", marginTop: "80px" }}>
+      <div className="flex justify-center items-center h-screen bg-gray-50">
         <Spin size="large" />
       </div>
     );
@@ -86,104 +77,78 @@ const BookDetailPage: React.FC = () => {
 
   if (error || !book) {
     return (
-      <div
-        style={{ padding: "20px", maxWidth: "1200px", margin: "80px auto 0" }}
-      >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-24">
         <Alert message={error || "Book not found"} type="error" showIcon />
       </div>
     );
   }
 
   return (
-    <div>
+    <div className="bg-gray-50 min-h-screen">
       <AppHeader isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
-      <div
-        style={{ padding: "20px", maxWidth: "1200px", margin: "80px auto 0" }}
-      >
-        <Row gutter={[32, 32]}>
-          <Col xs={24} md={8}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-24 mb-12">
+        <Row gutter={[32, 32]} className="bg-white rounded-lg shadow-lg p-8">
+          <Col xs={24} md={10}>
             <Image
               src={book.image || "https://via.placeholder.com/300x450"}
-              alt={`Cover of ${book.name || "Unknown"} by ${
-                book.author || "Unknown"
-              }`}
+              alt={`Cover of ${book.name || "Unknown"} by ${book.author || "Unknown"}`}
               preview={false}
-              style={{ maxWidth: "100%", height: "450px", objectFit: "cover" }}
+              className="w-full h-[500px] object-cover transition-transform duration-300 hover:scale-105"
             />
           </Col>
-          <Col xs={24} md={16}>
+          <Col xs={24} md={14}>
             <Title
               level={1}
-              style={{
-                fontSize: "36px",
-                fontWeight: "bold",
-                textAlign: "center",
-                color: "#333",
-              }}
+              className="text-4xl font-bold text-gray-900 mb-4 text-center md:text-left"
             >
               {book.name || "Unknown Title"}
             </Title>
-            <Paragraph
-              style={{
-                fontSize: "14px",
-                color: "#666",
-                textAlign: "center",
-                margin: "10px 0",
-              }}
-            >
-              <Text strong>Author:</Text> {book.author || "Unknown Author"} |
-              <Text strong>Genre:</Text> {book.genre || "N/A"} |
-              <Text strong>Year:</Text> {book.yearPublished || "N/A"}
-            </Paragraph>
-            <Paragraph
-              style={{
-                fontSize: "32px",
-                fontWeight: "bold",
-                color: "#ff0000",
-                textAlign: "center",
-                margin: "20px 0",
-              }}
-            >
+            <div className="flex flex-col gap-2 text-base text-gray-600 mb-6 text-center md:text-left">
+              <Paragraph>
+                <Text strong>Author:</Text> {book.author || "Unknown Author"}
+              </Paragraph>
+              <Paragraph>
+                <Text strong>Genre:</Text> {book.genre || "N/A"}
+              </Paragraph>
+              <Paragraph>
+                <Text strong>Year:</Text> {book.yearPublished || "N/A"}
+              </Paragraph>
+            </div>
+            <Paragraph className="text-3xl font-bold text-red-600 mb-6 text-center md:text-left">
               {book.rentalPrice
                 ? `${book.rentalPrice.toLocaleString()} đ`
                 : "N/A"}
             </Paragraph>
-            <Paragraph
-              style={{
-                fontSize: "12px",
-                color: "#666",
-                textAlign: "center",
-                marginBottom: "20px",
-              }}
-            >
-              Status: {book.stockStatus || "Unknown"}
+            <Paragraph className="text-sm text-gray-500 mb-6 text-center md:text-left">
+              Status:{" "}
+              <span
+                className={
+                  book.stockStatus === "in stock"
+                    ? "text-green-600 font-semibold"
+                    : "text-red-600 font-semibold"
+                }
+              >
+                {book.stockStatus
+                  ? book.stockStatus === "in stock"
+                    ? "In Stock"
+                    : "Out of Stock"
+                  : "Unknown"}
+              </span>
             </Paragraph>
-            <Paragraph
-              style={{
-                fontSize: "16px",
-                color: "#444",
-                textAlign: "justify",
-                lineHeight: "1.6",
-              }}
-            >
+            <Paragraph className="text-base text-gray-700 leading-relaxed mb-8">
               {book.detail || "No description available."}
             </Paragraph>
-            <div style={{ textAlign: "center", marginTop: "30px" }}>
+            <div className="flex justify-center md:justify-start items-center gap-4">
               <InputNumber
                 min={1}
                 value={quantity}
                 onChange={(value) => setQuantity(value as number)}
-                style={{ marginRight: "10px", width: "60px" }}
+                className="w-16"
               />
               <Button
                 type="primary"
                 size="large"
-                style={{
-                  fontSize: "18px",
-                  padding: "15px 30px",
-                  background: "#1A73E8",
-                  borderColor: "#1A73E8",
-                }}
+                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-lg transition-colors duration-200"
                 onClick={handleAddToCart}
               >
                 Thêm vào giỏ hàng

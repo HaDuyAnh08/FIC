@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Table, Button, Typography, Empty, message } from "antd";
+import { Table, Button, Typography, Empty, message, Spin } from "antd";
 import { useNavigate } from "react-router-dom";
 import AppHeader from "../../components/AppHeader";
 import AppFooter from "../../components/AppFooter";
@@ -29,7 +29,8 @@ const CartPage: React.FC = () => {
       try {
         setLoading(true);
         const items = await getCartItems(token);
-        setCartItems(items);
+        console.log("Fetched cart items:", items);
+        setCartItems(items || []);
       } catch (error) {
         console.error("Error fetching cart items:", error);
         message.error("Failed to load cart. Please try again.");
@@ -43,12 +44,15 @@ const CartPage: React.FC = () => {
   const handleRemoveFromCart = async (id: string) => {
     if (!token) return;
     try {
+      setLoading(true);
       await removeFromCart(id, token);
       setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
       message.success("Book removed from cart!");
     } catch (error) {
       console.error("Error removing from cart:", error);
       message.error("Failed to remove book from cart. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -59,6 +63,7 @@ const CartPage: React.FC = () => {
       return;
     }
     try {
+      setLoading(true);
       const bookIds = cartItems.map((item) => item.id);
       await checkout(bookIds, token);
       setCartItems([]);
@@ -67,6 +72,8 @@ const CartPage: React.FC = () => {
     } catch (error) {
       console.error("Error during checkout:", error);
       message.error("Failed to process checkout. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -91,6 +98,18 @@ const CartPage: React.FC = () => {
       dataIndex: "rentalPrice",
       key: "rentalPrice",
       render: (price: number) => `${price ? price.toLocaleString() : "0"} đ`,
+    },
+    {
+      title: "Quantity",
+      dataIndex: "quantity",
+      key: "quantity",
+      render: (quantity: number) => quantity || 1,
+    },
+    {
+      title: "Rental Days",
+      dataIndex: "rentalDays",
+      key: "rentalDays",
+      render: (rentalDays: number) => rentalDays || 7,
     },
     {
       title: "Subtotal",
@@ -123,7 +142,7 @@ const CartPage: React.FC = () => {
         <Title level={2}>Your Cart</Title>
         {loading ? (
           <div style={{ textAlign: "center", marginTop: "20px" }}>
-            Loading...
+            <Spin size="large" />
           </div>
         ) : cartItems.length === 0 ? (
           <Empty description="Your cart is empty">
@@ -139,6 +158,7 @@ const CartPage: React.FC = () => {
               rowKey="id"
               pagination={false}
               style={{ marginBottom: 20 }}
+              key={cartItems.length} // Ép re-render
             />
             <div style={{ textAlign: "right" }}>
               <Text strong style={{ fontSize: "18px" }}>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Table, Typography, Empty, Button } from "antd";
+import { Table, Button, Typography, Empty, message, Spin } from "antd";
 import { useNavigate } from "react-router-dom";
 import AppHeader from "../../components/AppHeader";
 import AppFooter from "../../components/AppFooter";
@@ -14,6 +14,7 @@ const RentalStatusPage: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(isAuthenticated());
   const { token } = useAuth();
   const [rentalItems, setRentalItems] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchRentalItems = async () => {
@@ -22,11 +23,15 @@ const RentalStatusPage: React.FC = () => {
         return;
       }
       try {
+        setLoading(true);
         const items = await getRentalItems(token);
-        setRentalItems(items);
+        console.log("Fetched rental items:", items);
+        setRentalItems(items || []);
       } catch (error) {
         console.error("Error fetching rental items:", error);
-        alert("Failed to load rental status. Please try again.");
+        message.error("Failed to load rentals. Please try again.");
+      } finally {
+        setLoading(false);
       }
     };
     fetchRentalItems();
@@ -34,7 +39,7 @@ const RentalStatusPage: React.FC = () => {
 
   const columns = [
     {
-      title: "Book",
+      title: "Product",
       dataIndex: "name",
       key: "name",
       render: (_: any, record: any) => (
@@ -58,17 +63,44 @@ const RentalStatusPage: React.FC = () => {
       title: "Quantity",
       dataIndex: "quantity",
       key: "quantity",
+      render: (quantity: number) => quantity || 1,
+    },
+    {
+      title: "Rental Days",
+      dataIndex: "rentalDays",
+      key: "rentalDays",
+      render: (rentalDays: number) => rentalDays || 7,
     },
     {
       title: "Subtotal",
       key: "subtotal",
       render: (_: any, record: any) =>
-        `${((record.rentalPrice || 0) * record.quantity).toLocaleString()} đ`,
+        `${(record.rentalPrice * (record.quantity || 1)).toLocaleString()} đ`,
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      render: (status: string) => status || "pending",
+    },
+    {
+      title: "Rented At",
+      dataIndex: "rentedAt",
+      key: "rentedAt",
+      render: (rentedAt: string) =>
+        rentedAt ? new Date(rentedAt).toLocaleDateString() : "N/A",
+    },
+    {
+      title: "Return Date",
+      dataIndex: "returnDate",
+      key: "returnDate",
+      render: (returnDate: string) =>
+        returnDate ? new Date(returnDate).toLocaleDateString() : "N/A",
     },
   ];
 
-  const totalRentalPrice = rentalItems.reduce(
-    (total, item) => total + (item.rentalPrice || 0) * item.quantity,
+  const totalAmount = rentalItems.reduce(
+    (total, item) => total + (item.rentalPrice || 0) * (item.quantity || 1),
     0
   );
 
@@ -76,11 +108,15 @@ const RentalStatusPage: React.FC = () => {
     <div>
       <AppHeader isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
       <div style={{ padding: "20px", maxWidth: "1200px", margin: "80px auto" }}>
-        <Title level={2}>Your Rental Status</Title>
-        {rentalItems.length === 0 ? (
-          <Empty description="You have no rented books">
-            <Button type="primary" onClick={() => navigate("/books")}>
-              Browse Books
+        <Title level={2}>Rental Status</Title>
+        {loading ? (
+          <div style={{ textAlign: "center", marginTop: "20px" }}>
+            <Spin size="large" />
+          </div>
+        ) : rentalItems.length === 0 ? (
+          <Empty description="No rental items found">
+            <Button type="primary" onClick={() => navigate("/")}>
+              Go to Home
             </Button>
           </Empty>
         ) : (
@@ -91,10 +127,11 @@ const RentalStatusPage: React.FC = () => {
               rowKey="id"
               pagination={false}
               style={{ marginBottom: 20 }}
+              key={rentalItems.length}
             />
             <div style={{ textAlign: "right" }}>
               <Text strong style={{ fontSize: "18px" }}>
-                Total: {totalRentalPrice.toLocaleString()} đ
+                Total Amount: {totalAmount.toLocaleString()} đ
               </Text>
             </div>
           </>
