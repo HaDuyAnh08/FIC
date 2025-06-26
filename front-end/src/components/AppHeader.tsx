@@ -4,19 +4,16 @@ import { ShoppingCartOutlined } from "@ant-design/icons";
 import logo from "../assets/logo.png";
 import axios from "../services/axios";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/AuthContext";
 
 interface HeaderProps {
   isLoggedIn: boolean;
   setIsLoggedIn: (value: boolean) => void;
-  userProfile?: string;
 }
 
-const Header: React.FC<HeaderProps> = ({
-  isLoggedIn,
-  setIsLoggedIn,
-  userProfile,
-}) => {
+const AppHeader: React.FC<HeaderProps> = ({ isLoggedIn, setIsLoggedIn }) => {
   const navigate = useNavigate();
+  const { token, setToken } = useAuth();
 
   const handleLogin = async () => {
     try {
@@ -29,6 +26,7 @@ const Header: React.FC<HeaderProps> = ({
 
   const handleLogout = () => {
     setIsLoggedIn(false);
+    setToken(null);
   };
 
   const userMenu = (
@@ -69,7 +67,10 @@ const Header: React.FC<HeaderProps> = ({
         boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
       }}
     >
-      <div style={{ display: "flex", alignItems: "center" }}>
+      <div
+        style={{ display: "flex", alignItems: "center", cursor: "pointer" }}
+        onClick={() => handleNavigate("/")}
+      >
         <img
           src={logo}
           alt="Logo"
@@ -86,8 +87,8 @@ const Header: React.FC<HeaderProps> = ({
             e.preventDefault();
             handleNavigate("/introduce");
           }}
+          className="nav-link"
           style={{
-            color: "#333",
             margin: "0 15px",
             fontSize: "14px",
             textDecoration: "none",
@@ -101,8 +102,8 @@ const Header: React.FC<HeaderProps> = ({
             e.preventDefault();
             handleNavigate("/books");
           }}
+          className="nav-link"
           style={{
-            color: "#333",
             margin: "0 15px",
             fontSize: "14px",
             textDecoration: "none",
@@ -114,12 +115,12 @@ const Header: React.FC<HeaderProps> = ({
       <div style={{ display: "flex", alignItems: "center" }}>
         {isLoggedIn ? (
           <>
-            <Dropdown overlay={cartMenu} trigger={["click"]}>
+            <Dropdown overlay={cartMenu} trigger={["hover"]}>
               <ShoppingCartOutlined
+                className="cart-icon"
                 style={{
                   fontSize: "20px",
                   marginRight: "15px",
-                  color: "#333",
                   cursor: "pointer",
                   position: "relative",
                 }}
@@ -127,7 +128,7 @@ const Header: React.FC<HeaderProps> = ({
             </Dropdown>
             <Dropdown overlay={userMenu} trigger={["click"]}>
               <img
-                src={userProfile || "https://via.placeholder.com/40"}
+                src="https://via.placeholder.com/40"
                 alt="User Profile"
                 style={{
                   width: "30px",
@@ -155,8 +156,26 @@ const Header: React.FC<HeaderProps> = ({
           </button>
         )}
       </div>
+      <style>
+        {`
+          .cart-icon {
+            color: #333;
+            transition: color 0.3s ease;
+          }
+          .cart-icon:hover {
+            color: red;
+          }
+          .nav-link {
+            color: #333;
+            transition: color 0.3s ease;
+          }
+          .nav-link:hover {
+            color: red;
+          }
+        `}
+      </style>
     </div>
   );
 };
 
-export default Header;
+export default AppHeader;

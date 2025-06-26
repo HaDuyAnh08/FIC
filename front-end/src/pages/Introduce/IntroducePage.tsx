@@ -1,8 +1,8 @@
 import React from "react";
 import { Row, Col, Typography } from "antd";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
-import { isAuthenticated } from "../utils/auth";
+import AppHeader from "../../components/AppHeader";
+import AppFooter from "../../components/AppFooter";
+import { isAuthenticated } from "../../utils/auth";
 
 const { Title, Paragraph } = Typography;
 
@@ -11,7 +11,7 @@ const IntroducePage: React.FC = () => {
 
   return (
     <div>
-      <Header isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+      <AppHeader isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
       <div
         style={{
           padding: "80px 20px 20px",
@@ -74,7 +74,7 @@ const IntroducePage: React.FC = () => {
           <li>CLB Cha mẹ sáng tạo, phối hợp với Interconnection My Dinh.</li>
         </ul>
       </div>
-      <Footer />
+      <AppFooter />
     </div>
   );
 };

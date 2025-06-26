@@ -1,20 +1,19 @@
-import React from 'react';
-import { BrowserRouter } from 'react-router-dom';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import AppRouter from './router/router';
-import { CartProvider } from './hooks/CartContext';
-
+import React from "react";
+import { BrowserRouter } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import AppRouter from "./router/AppRouter";
+import { AuthProvider } from "./hooks/AuthContext";
 
 const queryClient = new QueryClient();
 
 const App: React.FC = () => {
   return (
     <QueryClientProvider client={queryClient}>
-      <CartProvider>
+      <AuthProvider>
         <BrowserRouter>
-            <AppRouter />
+          <AppRouter />
         </BrowserRouter>
-      </CartProvider>
+      </AuthProvider>
     </QueryClientProvider>
   );
 };

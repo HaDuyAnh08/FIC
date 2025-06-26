@@ -1,6 +1,6 @@
 import React from "react";
 
-const Footer: React.FC = () => {
+const AppFooter: React.FC = () => {
   return (
     <div
       style={{
@@ -30,4 +30,4 @@ const Footer: React.FC = () => {
   );
 };
 
-export default Footer;
+export default AppFooter;
