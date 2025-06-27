@@ -31,8 +31,8 @@ const CartPage: React.FC = () => {
         const items = await getCartItems(token);
         setCartItems(items);
       } catch (error) {
-        console.error("Error fetching cart items:", error);
-        message.error("Failed to load cart. Please try again.");
+        console.error("Lỗi khi lấy danh sách giỏ hàng:", error);
+        message.error("Không thể tải giỏ hàng. Vui lòng thử lại.");
       } finally {
         setLoading(false);
       }
@@ -45,16 +45,16 @@ const CartPage: React.FC = () => {
     try {
       await removeFromCart(id, token);
       setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
-      message.success("Book removed from cart!");
+      message.success("Đã xóa sách khỏi giỏ hàng!");
     } catch (error) {
-      console.error("Error removing from cart:", error);
-      message.error("Failed to remove book from cart. Please try again.");
+      console.error("Lỗi khi xóa khỏi giỏ hàng:", error);
+      message.error("Không thể xóa sách khỏi giỏ hàng. Vui lòng thử lại.");
     }
   };
 
   const handleCheckout = async () => {
     if (!token) {
-      message.warning("Please login to proceed with checkout.");
+      message.warning("Vui lòng đăng nhập để tiến hành thanh toán.");
       navigate("/");
       return;
     }
@@ -62,17 +62,17 @@ const CartPage: React.FC = () => {
       const bookIds = cartItems.map((item) => item.id);
       await checkout(bookIds, token);
       setCartItems([]);
-      message.success("Checkout successful!");
+      message.success("Thanh toán thành công!");
       navigate("/rental-status");
     } catch (error) {
-      console.error("Error during checkout:", error);
-      message.error("Failed to process checkout. Please try again.");
+      console.error("Lỗi trong quá trình thanh toán:", error);
+      message.error("Không thể xử lý thanh toán. Vui lòng thử lại.");
     }
   };
 
   const columns = [
     {
-      title: "Product",
+      title: "Sản phẩm",
       dataIndex: "name",
       key: "name",
       render: (_: any, record: any) => (
@@ -82,18 +82,18 @@ const CartPage: React.FC = () => {
             alt={record.name}
             style={{ width: 50, marginRight: 10 }}
           />
-          <span>{record.name || "Unknown Title"}</span>
+          <span>{record.name || "Tiêu đề không xác định"}</span>
         </div>
       ),
     },
     {
-      title: "Price",
+      title: "Giá",
       dataIndex: "rentalPrice",
       key: "rentalPrice",
       render: (price: number) => `${price ? price.toLocaleString() : "0"} đ`,
     },
     {
-      title: "Subtotal",
+      title: "Tổng phụ",
       key: "subtotal",
       render: (_: any, record: any) =>
         `${(
@@ -101,11 +101,11 @@ const CartPage: React.FC = () => {
         ).toLocaleString()} đ`,
     },
     {
-      title: "Action",
+      title: "Hành động",
       key: "action",
       render: (_: any, record: any) => (
         <Button danger onClick={() => handleRemoveFromCart(record.id)}>
-          Remove
+          Xóa
         </Button>
       ),
     },
@@ -120,15 +120,15 @@ const CartPage: React.FC = () => {
     <div>
       <AppHeader isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
       <div style={{ padding: "20px", maxWidth: "1200px", margin: "80px auto" }}>
-        <Title level={2}>Your Cart</Title>
+        <Title level={2}>Giỏ hàng của bạn</Title>
         {loading ? (
           <div style={{ textAlign: "center", marginTop: "20px" }}>
-            Loading...
+            Đang tải...
           </div>
         ) : cartItems.length === 0 ? (
-          <Empty description="Your cart is empty">
+          <Empty description="Giỏ hàng của bạn đang trống">
             <Button type="primary" onClick={() => navigate("/")}>
-              Continue Shopping
+              Tiếp tục thuê sách
             </Button>
           </Empty>
         ) : (
@@ -142,7 +142,7 @@ const CartPage: React.FC = () => {
             />
             <div style={{ textAlign: "right" }}>
               <Text strong style={{ fontSize: "18px" }}>
-                Total: {totalPrice.toLocaleString()} đ
+                Tổng cộng: {totalPrice.toLocaleString()} đ
               </Text>
               <div style={{ marginTop: 20 }}>
                 <Button
@@ -151,10 +151,10 @@ const CartPage: React.FC = () => {
                   onClick={handleCheckout}
                   style={{ marginRight: 10 }}
                 >
-                  Proceed to Checkout
+                  Tiến hành thanh toán
                 </Button>
                 <Button danger size="large" onClick={() => setCartItems([])}>
-                  Clear Cart
+                  Xóa giỏ hàng
                 </Button>
               </div>
             </div>

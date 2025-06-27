@@ -25,8 +25,8 @@ const RentalStatusPage: React.FC = () => {
         const items = await getRentalItems(token);
         setRentalItems(items);
       } catch (error) {
-        console.error("Error fetching rental items:", error);
-        alert("Failed to load rental status. Please try again.");
+        console.error("Lỗi khi lấy danh sách sách đã thuê:", error);
+        alert("Không thể tải trạng thái thuê. Vui lòng thử lại.");
       }
     };
     fetchRentalItems();
@@ -34,7 +34,7 @@ const RentalStatusPage: React.FC = () => {
 
   const columns = [
     {
-      title: "Book",
+      title: "Sách",
       dataIndex: "name",
       key: "name",
       render: (_: any, record: any) => (
@@ -44,23 +44,23 @@ const RentalStatusPage: React.FC = () => {
             alt={record.name}
             style={{ width: 50, marginRight: 10 }}
           />
-          <span>{record.name || "Unknown Title"}</span>
+          <span>{record.name || "Tiêu đề không xác định"}</span>
         </div>
       ),
     },
     {
-      title: "Price",
+      title: "Giá",
       dataIndex: "rentalPrice",
       key: "rentalPrice",
       render: (price: number) => `${price ? price.toLocaleString() : "0"} đ`,
     },
     {
-      title: "Quantity",
+      title: "Số lượng",
       dataIndex: "quantity",
       key: "quantity",
     },
     {
-      title: "Subtotal",
+      title: "Tổng phụ",
       key: "subtotal",
       render: (_: any, record: any) =>
         `${((record.rentalPrice || 0) * record.quantity).toLocaleString()} đ`,
@@ -76,11 +76,11 @@ const RentalStatusPage: React.FC = () => {
     <div>
       <AppHeader isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
       <div style={{ padding: "20px", maxWidth: "1200px", margin: "80px auto" }}>
-        <Title level={2}>Your Rental Status</Title>
+        <Title level={2}>Trạng thái thuê sách của bạn</Title>
         {rentalItems.length === 0 ? (
-          <Empty description="You have no rented books">
+          <Empty description="Bạn chưa thuê sách nào">
             <Button type="primary" onClick={() => navigate("/books")}>
-              Browse Books
+              Duyệt sách
             </Button>
           </Empty>
         ) : (
@@ -94,7 +94,7 @@ const RentalStatusPage: React.FC = () => {
             />
             <div style={{ textAlign: "right" }}>
               <Text strong style={{ fontSize: "18px" }}>
-                Total: {totalRentalPrice.toLocaleString()} đ
+                Tổng cộng: {totalRentalPrice.toLocaleString()} đ
               </Text>
             </div>
           </>
