@@ -80,9 +80,9 @@ export const getRentalItems = async (token: string): Promise<Book[]> => {
         yearPublished: item.book?.yearPublished || 0,
         quantity     : item.quantity || 1,
         rentalDays   : item.rentalDays || 7,
-        rentedAt     : order.rentedAt,
-        returnDate   : order.returnDate,
-        status       : order.status || "pending"
+        rentedAt     : item.rentedAt,
+        returnDate   : item.returnDate,
+        status       : item.status || "pending"
       }))
     );
     return items;
