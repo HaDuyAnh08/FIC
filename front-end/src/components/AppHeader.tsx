@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Dropdown, Menu } from "antd";
 import { ShoppingCartOutlined } from "@ant-design/icons";
 import logo from "../assets/logo.png";
@@ -14,6 +14,31 @@ interface HeaderProps {
 const AppHeader: React.FC<HeaderProps> = ({ isLoggedIn, setIsLoggedIn }) => {
   const navigate = useNavigate();
   const { token, setToken } = useAuth();
+  const [profilePicture, setProfilePicture] = useState<string>(
+    "https://via.placeholder.com/40"
+  );
+
+  useEffect(() => {
+    const fetchUserPicture = async () => {
+      if (isLoggedIn && token) {
+        try {
+          const response = await axios.get("/user/picture", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          setProfilePicture(
+            response.data.picture || "https://via.placeholder.com/40"
+          );
+        } catch (error) {
+          console.error("Error fetching user picture:", error);
+          setProfilePicture("https://via.placeholder.com/40");
+        }
+      }
+    };
+
+    fetchUserPicture();
+  }, [isLoggedIn, token]);
 
   const handleLogin = async () => {
     try {
@@ -27,6 +52,7 @@ const AppHeader: React.FC<HeaderProps> = ({ isLoggedIn, setIsLoggedIn }) => {
   const handleLogout = () => {
     setIsLoggedIn(false);
     setToken(null);
+    setProfilePicture("https://via.placeholder.com/40");
   };
 
   const userMenu = (
@@ -128,7 +154,7 @@ const AppHeader: React.FC<HeaderProps> = ({ isLoggedIn, setIsLoggedIn }) => {
             </Dropdown>
             <Dropdown overlay={userMenu} trigger={["click"]}>
               <img
-                src="https://via.placeholder.com/40"
+                src={profilePicture}
                 alt="User Profile"
                 style={{
                   width: "30px",

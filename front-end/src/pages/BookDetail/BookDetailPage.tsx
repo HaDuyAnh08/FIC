@@ -1,6 +1,15 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Row, Col, Typography, Image, Spin, Alert, Button, InputNumber } from "antd";
+import {
+  Row,
+  Col,
+  Typography,
+  Image,
+  Spin,
+  Alert,
+  Button,
+  InputNumber,
+} from "antd";
 import AppHeader from "../../components/AppHeader";
 import AppFooter from "../../components/AppFooter";
 import { getBookById } from "../../services/bookService";
@@ -91,7 +100,9 @@ const BookDetailPage: React.FC = () => {
           <Col xs={24} md={10}>
             <Image
               src={book.image || "https://via.placeholder.com/300x450"}
-              alt={`Cover of ${book.name || "Unknown"} by ${book.author || "Unknown"}`}
+              alt={`Cover of ${book.name || "Unknown"} by ${
+                book.author || "Unknown"
+              }`}
               preview={false}
               className="w-full h-[500px] object-cover transition-transform duration-300 hover:scale-105"
             />

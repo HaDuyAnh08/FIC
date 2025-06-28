@@ -1,4 +1,3 @@
-// src/pages/Home/Banner.tsx
 import React from "react";
 
 interface BannerProps {
@@ -60,7 +59,9 @@ const Banner: React.FC<BannerProps> = ({ imageUrl, altText = "Banner" }) => {
               cursor: "pointer",
               transition: "background 0.3s",
             }}
-            onClick={() => window.scrollTo({ top: window.innerHeight, behavior: "smooth" })}
+            onClick={() =>
+              window.scrollTo({ top: window.innerHeight, behavior: "smooth" })
+            }
             onMouseOver={(e) => (e.currentTarget.style.background = "#357ABD")}
             onMouseOut={(e) => (e.currentTarget.style.background = "#4A90E2")}
           >

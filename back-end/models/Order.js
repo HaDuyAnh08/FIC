@@ -1,48 +1,27 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const orderItemSchema = new mongoose.Schema({ 
-  book: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Book',
-    required: true
-  },
-  quantity: {
-    type: Number,
-    default: 1
-  },
-  rentalDays: {
-    type: Number,
-    default: 7
-  },
-  price: {
-    type: Number,
-    required: true
-  }
+const orderItemSchema = new mongoose.Schema({
+  book: { type: mongoose.Schema.Types.ObjectId, ref: "Book", required: true },
+  quantity: { type: Number, default: 1 },
+  rentalDays: { type: Number, default: 7 },
+  price: { type: Number, required: true },
+
+  rentedAt: { type: Date, default: Date.now },
+  returnDate: { type: Date },
+  status: { type: String, enum: ["active", "returned"], default: "active" },
 });
 
-const orderSchema = new mongoose.Schema({    // người thuê
-  userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User', 
-    required: true
+const orderSchema = new mongoose.Schema(
+  {
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+      unique: true,
+    },
+    items: [orderItemSchema],
+    totalAmount: { type: Number, default: 0 },
   },
-  items: [orderItemSchema], // mảng sách thuê
-  totalAmount: {
-    type: Number,
-    required: true
-  },
-  status: {
-    type: String,
-    enum: ['pending', 'active', 'returned', 'cancelled'],
-    default: 'pending'
-  },
-  rentedAt: {
-    type: Date,
-    default: Date.now
-  },
-  returnDate: {
-    type: Date
-  }
-}, { timestamps: true });
+);
 
-module.exports = mongoose.model('Order', orderSchema);
+module.exports = mongoose.model("Order", orderSchema);

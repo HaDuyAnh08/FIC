@@ -158,7 +158,7 @@ const CartPage: React.FC = () => {
               rowKey="id"
               pagination={false}
               style={{ marginBottom: 20 }}
-              key={cartItems.length} // Ép re-render
+              key={cartItems.length} 
             />
             <div style={{ textAlign: "right" }}>
               <Text strong style={{ fontSize: "18px" }}>

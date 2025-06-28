@@ -176,7 +176,10 @@ const BookList: React.FC<BookListProps> = ({
                   >
                     <img
                       alt={book.name || "Unknown"}
-                      src={book.image || "https://via.placeholder.com/200x300?text=No+Image"}
+                      src={
+                        book.image ||
+                        "https://via.placeholder.com/200x300?text=No+Image"
+                      }
                       style={{
                         width: "100%",
                         height: "300px",

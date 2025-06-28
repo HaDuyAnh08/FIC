@@ -1,10 +1,9 @@
-// src/pages/Home/HomePage.tsx
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import AppHeader from "../../components/AppHeader";
 import AppFooter from "../../components/AppFooter";
 import SearchBar from "./SearchBar";
-import Banner from "./banner"; // Fixed casing to match banner.tsx
+import Banner from "./Banner";
 import bannerImage from "../../assets/banner-image.jpg";
 import { isAuthenticated, login } from "../../utils/auth";
 import { useAuth } from "../../hooks/AuthContext";

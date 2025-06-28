@@ -1,7 +1,7 @@
-const Cart = require('../../models/Cart');
+const Cart = require("../../models/Cart");
 
-module.exports = async (req, res) => { 
-  const userId = req.user._id; // get token
+module.exports = async (req, res) => {
+  const userId = req.user._id;
   const { bookId, quantity = 1, rentalDays = 7 } = req.body;
 
   try {
@@ -10,10 +10,12 @@ module.exports = async (req, res) => {
     if (!cart) {
       cart = new Cart({
         userId,
-        items: [{ book: bookId, quantity, rentalDays }]
+        items: [{ book: bookId, quantity, rentalDays }],
       });
     } else {
-      const existingItem = cart.items.find(item => item.book.toString() === bookId);
+      const existingItem = cart.items.find(
+        (item) => item.book.toString() === bookId
+      );
       if (existingItem) {
         existingItem.quantity += quantity;
         existingItem.rentalDays = rentalDays;

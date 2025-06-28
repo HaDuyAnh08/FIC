@@ -8,4 +8,9 @@ export interface Book {
   image?: string;
   yearPublished?: number;
   detail?: string;
+  rentalDays?: number;
+  quantity?: number;
+  rentedAt?: string;
+  returnDate?: string;
+  status?: "pending" | "active" | "returned" | "cancelled";
 }
