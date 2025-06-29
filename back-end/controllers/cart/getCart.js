@@ -3,7 +3,7 @@ const Cart = require("../../models/Cart");
 module.exports = async (req, res) => {
   try {
     const userId = req.user._id;
-    console.log(userId);
+
     const cartItems = await Cart.findOne({ userId }).populate("items.book");
 
     if (!cartItems) {
