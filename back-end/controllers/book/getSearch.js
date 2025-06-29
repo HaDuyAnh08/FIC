@@ -1,11 +1,12 @@
-const Book = require('../../models/Book');
+const Book = require("../../models/Book");
+
 module.exports = async (req, res) => {
   try {
-    const {name, genre} = req.query
+    const { name, genre } = req.query;
     const filter = {};
-    if (name) filter.name = new RegExp(name, 'i');
+    if (name) filter.name = new RegExp(name, "i");
 
-    if (genre) filter.genre = new RegExp(genre, 'i');
+    if (genre) filter.genre = new RegExp(genre, "i");
 
     const books = await Book.find(filter);
     res.json(books);

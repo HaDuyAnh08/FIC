@@ -1,13 +1,12 @@
-// controllers/order/getOrders.js
-const Order = require('../../models/Order');
+const Order = require("../../models/Order");
 
 module.exports = async (req, res) => {
   try {
     const userId = req.user._id;
 
     const orders = await Order.find({ userId })
-      .populate('items.book') // Lấy thông tin sách trong đơn
-      .sort({ createdAt: -1 }); // Sắp xếp mới nhất trước  
+      .populate("items.book")
+      .sort({ createdAt: -1 });
 
     res.status(200).json(orders);
   } catch (err) {

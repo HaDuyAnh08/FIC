@@ -1,39 +1,39 @@
-const Order = require('../../models/Order');
-const Cart  = require('../../models/Cart');
-const { sendMail } = require('../helpers/sendMail');
+const Order = require("../../models/Order");
+const Cart = require("../../models/Cart");
+const { sendMail } = require("../helpers/sendMail");
 
 module.exports = async (req, res) => {
   try {
     const { _id: userId, email, name } = req.user;
 
-    /* 1️⃣ Lấy giỏ tạm */
-    const cart = await Cart.findOne({ userId }).populate('items.book');
+    const cart = await Cart.findOne({ userId }).populate("items.book");
     if (!cart || cart.items.length === 0) {
-      return res.status(400).json({ message: 'Giỏ hàng trống' });
+      return res.status(400).json({ message: "Giỏ hàng trống" });
     }
 
-    /* 2️⃣ Tìm (hoặc tạo mới) Order duy nhất của user */
     let order = await Order.findOne({ userId });
     if (!order) {
       order = new Order({
         userId,
         items: [],
         totalAmount: 0,
-        rentedAt: null,   
-        returnDate: null, 
-        status: 'pending'
+        rentedAt: null,
+        returnDate: null,
+        status: "pending",
       });
     }
 
     let totalAmountAdded = 0;
-    let maxRentalDays    = 0;
-    const now            = new Date();
+    let maxRentalDays = 0;
+    const now = new Date();
 
     for (const cartItem of cart.items) {
       const { book, quantity, rentalDays } = cartItem;
 
       if (book.stock < quantity) {
-        return res.status(400).json({ message: `Sách "${book.name}" không đủ trong kho.` });
+        return res
+          .status(400)
+          .json({ message: `Sách "${book.name}" không đủ trong kho.` });
       }
 
       book.stock -= quantity;
@@ -44,19 +44,17 @@ module.exports = async (req, res) => {
 
       maxRentalDays = Math.max(maxRentalDays, rentalDays);
 
-      /* Đẩy vào order.items – mỗi item kèm mốc thời gian riêng */
       order.items.push({
-        book      : book._id,
+        book: book._id,
         quantity,
         rentalDays,
         price,
-        rentedAt  : now,
+        rentedAt: now,
         returnDate: new Date(now.getTime() + rentalDays * 864e5),
-        status    : 'active'
+        status: "active",
       });
     }
 
-    /* 4️⃣ Cập nhật tổng tiền & ngày trả “lớn nhất” cho order */
     order.totalAmount += totalAmountAdded;
 
     const newBatchReturn = new Date(now.getTime() + maxRentalDays * 864e5);
@@ -64,32 +62,40 @@ module.exports = async (req, res) => {
       order.returnDate = newBatchReturn;
     }
 
-    await order.save();              // <— chỉ SAVE, không tạo mới
-    await Cart.deleteOne({ userId }); // xoá giỏ tạm
+    await order.save();
+    await Cart.deleteOne({ userId });
 
-    
-    const rentDateStr   = now.toLocaleDateString('vi-VN');
-    const returnDateStr = newBatchReturn.toLocaleDateString('vi-VN');
+    const rentDateStr = now.toLocaleDateString("vi-VN");
+    const returnDateStr = newBatchReturn.toLocaleDateString("vi-VN");
 
     const html = `
       <h2>📚 Thông tin đơn thuê sách</h2>
-      ${cart.items.map(item => `
+      ${cart.items
+        .map(
+          (item) => `
         <p><strong>Tên sách:</strong> ${item.book.name}</p>
         <p><strong>Tác giả:</strong> ${item.book.author}</p>
         <p><strong>Giá thuê:</strong> ${item.book.rentalPrice}đ</p>
         <p><strong>Số lượng:</strong> ${item.quantity}</p>
         <p><strong>Thời gian thuê:</strong> ${item.rentalDays} ngày</p>
         <hr/>
-      `).join('')}
+      `
+        )
+        .join("")}
       <p><strong>Tổng tiền:</strong> ${totalAmountAdded}đ</p>
       <p><strong>Ngày thuê:</strong> ${rentDateStr}</p>
       <p><strong>Ngày trả dự kiến:</strong> ${returnDateStr}</p>
       <p>📬 Cảm ơn ${name} đã sử dụng dịch vụ tại LIBERO!</p>
     `;
 
-    await sendMail(email, 'Xác nhận đơn thuê sách', `Dear ${name}, cảm ơn bạn đã đặt sách`, html);
+    await sendMail(
+      email,
+      "Xác nhận đơn thuê sách",
+      `Dear ${name}, cảm ơn bạn đã đặt sách`,
+      html
+    );
 
-    return res.status(201).json({ message: 'Thuê sách thành công', order });
+    return res.status(201).json({ message: "Thuê sách thành công", order });
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }
