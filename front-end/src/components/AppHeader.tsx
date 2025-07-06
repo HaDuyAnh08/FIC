@@ -117,7 +117,7 @@ const AppHeader: React.FC<HeaderProps> = ({ isLoggedIn, setIsLoggedIn }) => {
           style={{
             margin: "0 15px",
             fontSize: "14px",
-            textDecoration: "none",
+            //textDecoration: "none",
           }}
         >
           Giới thiệu
@@ -132,7 +132,7 @@ const AppHeader: React.FC<HeaderProps> = ({ isLoggedIn, setIsLoggedIn }) => {
           style={{
             margin: "0 15px",
             fontSize: "14px",
-            textDecoration: "none",
+            //textDecoration: "none",
           }}
         >
           Thư viện sách
@@ -183,23 +183,27 @@ const AppHeader: React.FC<HeaderProps> = ({ isLoggedIn, setIsLoggedIn }) => {
         )}
       </div>
       <style>
-        {`
-          .cart-icon {
-            color: #333;
-            transition: color 0.3s ease;
-          }
-          .cart-icon:hover {
-            color: red;
-          }
-          .nav-link {
-            color: #333;
-            transition: color 0.3s ease;
-          }
-          .nav-link:hover {
-            color: red;
-          }
-        `}
-      </style>
+  {`
+    .cart-icon {
+      color: #333;
+      transition: color 0.3s ease;
+    }
+    .cart-icon:hover {
+      color: red;
+    }
+
+    .nav-link {
+      color: #000;
+      transition: color 0.3s ease;
+      font-weight: 600; 
+    }
+    .nav-link:hover {
+      color: black;                  
+      text-decoration: underline;  
+      text-underline-offset: 4px; 
+    }
+  `}
+</style>
     </div>
   );
 };

@@ -9,7 +9,7 @@ export interface Book {
   yearPublished?: number;
   detail?: string;
   rentalDays?: number;
-  quantity?: number;
+  stock?: number;
   rentedAt?: string;
   returnDate?: string;
   status?: "pending" | "active" | "returned" | "cancelled";

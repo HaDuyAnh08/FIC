@@ -28,25 +28,25 @@ module.exports = async (req, res) => {
     const now = new Date();
 
     for (const cartItem of cart.items) {
-      const { book, quantity, rentalDays } = cartItem;
+      const { book, stock, rentalDays } = cartItem;
 
-      if (book.stock < quantity) {
+      if (book.stock < stock) {
         return res
           .status(400)
           .json({ message: `Sách "${book.name}" không đủ trong kho.` });
       }
 
-      book.stock -= quantity;
+      book.stock -= stock;
       await book.save();
 
-      const price = book.rentalPrice * quantity;
+      const price = book.rentalPrice * stock;
       totalAmountAdded += price;
 
       maxRentalDays = Math.max(maxRentalDays, rentalDays);
 
       order.items.push({
         book: book._id,
-        quantity,
+        stock,
         rentalDays,
         price,
         rentedAt: now,
@@ -76,7 +76,7 @@ module.exports = async (req, res) => {
         <p><strong>Tên sách:</strong> ${item.book.name}</p>
         <p><strong>Tác giả:</strong> ${item.book.author}</p>
         <p><strong>Giá thuê:</strong> ${item.book.rentalPrice}đ</p>
-        <p><strong>Số lượng:</strong> ${item.quantity}</p>
+        <p><strong>Số lượng:</strong> ${item.stock}</p>
         <p><strong>Thời gian thuê:</strong> ${item.rentalDays} ngày</p>
         <hr/>
       `

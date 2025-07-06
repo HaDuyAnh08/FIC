@@ -5,7 +5,7 @@ import BookDetailPage from "../pages/BookDetail/BookDetailPage";
 import IntroducePage from "../pages/Introduce/IntroducePage";
 import CartPage from "../pages/Cart/CartPage";
 import RentalStatusPage from "../pages/RentalStatus/RentalStatusPage";
-
+import GoogleRedirect from '../pages/GoogleRedirect/GoogleRedirect';
 const AppRouter: React.FC = () => {
   return (
     <Routes>
@@ -15,8 +15,9 @@ const AppRouter: React.FC = () => {
       <Route path="/introduce" element={<IntroducePage />} />
       <Route path="/cart" element={<CartPage />} />
       <Route path="/rental-status" element={<RentalStatusPage />} />
-    </Routes>
-  );
+      <Route path="/redirect" element={<GoogleRedirect />} />  
+      </Routes>
+      );
 };
 
 export default AppRouter;

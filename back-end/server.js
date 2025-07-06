@@ -19,6 +19,9 @@ app.use("/", bookRoutes);
 app.use("/", cartRoutes);
 app.use("/", orderRoutes);
 
+const adminRoutes = require('./routes/adminRoutes');
+app.use('/api/admin', adminRoutes);
+
 const connectDB = require("./config/db");
 connectDB().catch((err) => console.error("MongoDB connection error:", err));
 

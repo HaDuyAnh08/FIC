@@ -32,7 +32,7 @@ export const getCartItems = async (token: string): Promise<Book[]> => {
       stockStatus: item.book.stockStatus || "Available",
       image: item.book.image || "https://via.placeholder.com/150",
       yearPublished: item.book.yearPublished || 0,
-      quantity: item.quantity || 1,
+      stock: item.stock || 1,
     }));
   } catch (error) {
     console.error("Error in getCartItems:", error);
@@ -79,7 +79,7 @@ export const getRentalItems = async (token: string): Promise<Book[]> => {
           stockStatus: item.book?.stockStatus || "Available",
           image: item.book?.image || "https://via.placeholder.com/150",
           yearPublished: item.book?.yearPublished || 0,
-          quantity: item.quantity || 1,
+          stock: item.stock || 1,
           rentalDays: item.rentalDays || 7,
           rentedAt: item.rentedAt,
           returnDate: item.returnDate,

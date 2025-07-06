@@ -23,7 +23,7 @@ const bookSchema = new mongoose.Schema(
     },
     stock: {
       type: Number,
-      default: 10,
+      default: 9999,
       min: 0,
     },
     stockStatus: {
@@ -35,7 +35,7 @@ const bookSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
-    description: { type: String, default: "" },
+    detail: { type: String, default: "" },
 
     course: { type: String, default: "" },
 

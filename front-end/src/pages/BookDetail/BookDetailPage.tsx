@@ -26,7 +26,7 @@ const BookDetailPage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(isAuthenticated());
-  const [quantity, setQuantity] = useState(1);
+  const [stock, setstock] = useState(1);
   const { token } = useAuth();
 
   useEffect(() => {
@@ -63,7 +63,7 @@ const BookDetailPage: React.FC = () => {
 
   const handleAddToCart = async () => {
     if (!token) {
-      alert("Please login to add items to cart.");
+      alert(" login to add items to cart.");
       return;
     }
     if (!book) return;
@@ -152,8 +152,8 @@ const BookDetailPage: React.FC = () => {
             <div className="flex justify-center md:justify-start items-center gap-4">
               <InputNumber
                 min={1}
-                value={quantity}
-                onChange={(value) => setQuantity(value as number)}
+                value={stock}
+                onChange={(value) => setstock(value as number)}
                 className="w-16"
               />
               <Button

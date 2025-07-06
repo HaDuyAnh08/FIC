@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const orderItemSchema = new mongoose.Schema({
   book: { type: mongoose.Schema.Types.ObjectId, ref: "Book", required: true },
-  quantity: { type: Number, default: 1 },
+  stock: { type: Number, default: 1 },
   rentalDays: { type: Number, default: 7 },
   price: { type: Number, required: true },
 

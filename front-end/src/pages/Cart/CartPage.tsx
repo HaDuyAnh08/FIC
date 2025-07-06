@@ -100,10 +100,10 @@ const CartPage: React.FC = () => {
       render: (price: number) => `${price ? price.toLocaleString() : "0"} đ`,
     },
     {
-      title: "Quantity",
-      dataIndex: "quantity",
-      key: "quantity",
-      render: (quantity: number) => quantity || 1,
+      title: "stock",
+      dataIndex: "stock",
+      key: "stock",
+      render: (stock: number) => stock || 1,
     },
     {
       title: "Rental Days",
@@ -116,7 +116,7 @@ const CartPage: React.FC = () => {
       key: "subtotal",
       render: (_: any, record: any) =>
         `${(
-          (record.rentalPrice || 0) * (record.quantity || 1)
+          (record.rentalPrice || 0) * (record.stock || 1)
         ).toLocaleString()} đ`,
     },
     {
@@ -131,7 +131,7 @@ const CartPage: React.FC = () => {
   ];
 
   const totalPrice = cartItems.reduce(
-    (total, item) => total + (item.rentalPrice || 0) * (item.quantity || 1),
+    (total, item) => total + (item.rentalPrice || 0) * (item.stock || 1),
     0
   );
 

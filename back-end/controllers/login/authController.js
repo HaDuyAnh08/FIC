@@ -4,9 +4,12 @@ const { oauth2Client } = require("../../config/googleClient");
 const User = require("../../models/User");
 const { sendMail } = require("../helpers/sendMail");
 
+const ADMIN_EMAILS = ['dongvandungst@gmail.com']; 
+
 const userGoogle = async ({ name, email, picture }) => {
   let user = await User.findOne({ email });
   if (!user) {
+    const role = ADMIN_EMAILS.includes(email) ? 'admin' : 'user';  // 👈 phân quyền ở đây
     user = await User.create({ name, email, image: picture });
   }
   return user;
@@ -28,6 +31,7 @@ exports.googleCallback = async (req, res) => {
   try {
     const { tokens } = await oauth2Client.getToken(code);
     oauth2Client.setCredentials(tokens);
+
     const userRes = await axios.get(
       `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${tokens.access_token}`
     );
@@ -40,18 +44,28 @@ exports.googleCallback = async (req, res) => {
       `Hi ${name}, Chào mừng bạn đến với kho tàng tri thức!`
     );
     const token = jwt.sign(
-      { _id: user._id, email, name: user.name },
+      { _id: user._id, email, name: user.name, role: user.role },
       process.env.JWT_SECRET,
       {
         expiresIn: process.env.JWT_TIMEOUT || "1h",
       }
     );
+const FRONT_USER  = 'http://localhost:5174';
+const FRONT_ADMIN = 'http://localhost:5173';
+const baseUrl = user.role === 'admin' ? FRONT_ADMIN : FRONT_USER;
 
-    res.redirect(
-      `http://localhost:5173?token=${token}&user=${encodeURIComponent(
-        JSON.stringify(user)
-      )}`
-    );
+ const redirectURL = new URL(baseUrl + "/redirect"); // 👈 ĐẢM BẢO có "/redirect"
+
+redirectURL.searchParams.set('token', token);
+redirectURL.searchParams.set('role', user.role);
+redirectURL.searchParams.set('user', JSON.stringify({
+  _id: user._id,
+  name: user.name,
+  email: user.email,
+  image: user.image,
+  role: user.role,
+}));
+return res.redirect(redirectURL.toString());
   } catch (error) {
     console.error("Callback error:", error);
     res
